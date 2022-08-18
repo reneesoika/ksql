@@ -18,7 +18,11 @@ package io.confluent.ksql.function.udaf.average;
 import io.confluent.ksql.function.udaf.TableUdaf;
 import io.confluent.ksql.function.udaf.UdafDescription;
 import io.confluent.ksql.function.udaf.UdafFactory;
+import io.confluent.ksql.schema.ksql.types.SqlStruct;
+import io.confluent.ksql.schema.ksql.types.SqlType;
+import io.confluent.ksql.schema.ksql.types.SqlTypes;
 import io.confluent.ksql.util.KsqlConstants;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import org.apache.kafka.connect.data.Schema;
 import org.apache.kafka.connect.data.SchemaBuilder;
@@ -77,8 +81,7 @@ public final class AverageUdaf {
   }
 
   // original: (no error, exact schema specified in annotation)
-  @UdafFactory(description = "Compute average of column with type Double.",
-      aggregateSchema = "STRUCT<SUM double, COUNT bigint>")
+  @UdafFactory(description = "Compute average of column with type Double.")
   public static TableUdaf<Double, Struct, Double> averageDouble() {
 
     return getAverageImplementation(
@@ -202,6 +205,14 @@ public final class AverageUdaf {
         return new Struct(structSchema)
             .put(SUM, subtracter.apply(aggregate, valueToUndo))
             .put(COUNT, aggregate.getInt64(COUNT) - 1);
+      }
+
+      @Override
+      public Optional<SqlType> getAggregateSqlType() {
+        return Optional.of(SqlStruct.builder()
+                .field(SUM, SqlTypes.DOUBLE)
+                .field(COUNT, SqlTypes.BIGINT)
+                .build());
       }
     };
   }
