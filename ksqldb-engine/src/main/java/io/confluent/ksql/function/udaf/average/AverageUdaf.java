@@ -132,6 +132,20 @@ public final class AverageUdaf {
         (sum, valueToUndo) -> sum.getFloat64(SUM) - valueToUndo);
   }*/
 
+  // generic struct: (cannot resolve unknown type)
+  /*@UdafFactory(description = "Compute average of column with type Double.",
+          aggregateSchema = "STRUCT<SUM double, COUNT T>")
+  public static TableUdaf<Double, Struct, Double> averageDouble() {
+
+    return getAverageImplementation(
+            0.0,
+            STRUCT_DOUBLE,
+            (sum, newValue) -> sum.getFloat64(SUM) + newValue,
+            (sum, count) -> sum.getFloat64(SUM) / count,
+            (sum1, sum2) -> sum1.getFloat64(SUM) + sum2.getFloat64(SUM),
+            (sum, valueToUndo) -> sum.getFloat64(SUM) - valueToUndo);
+  }*/
+
 
   private static <I> TableUdaf<I, Struct, Double> getAverageImplementation(
       final I initialValue,
