@@ -76,6 +76,7 @@ public final class AverageUdaf {
         (sum, valueToUndo) -> sum.getInt32(SUM) - valueToUndo);
   }
 
+  // original: (no error, exact schema specified in annotation)
   @UdafFactory(description = "Compute average of column with type Double.",
       aggregateSchema = "STRUCT<SUM double, COUNT bigint>")
   public static TableUdaf<Double, Struct, Double> averageDouble() {
@@ -88,6 +89,48 @@ public final class AverageUdaf {
         (sum1, sum2) -> sum1.getFloat64(SUM) + sum2.getFloat64(SUM),
         (sum, valueToUndo) -> sum.getFloat64(SUM) - valueToUndo);
   }
+
+  // struct w/ no fields in annotation: (struct schemas do not match error)
+  /*@UdafFactory(description = "Compute average of column with type Double.",
+      aggregateSchema = "STRUCT< >")
+  public static TableUdaf<Double, Struct, Double> averageDouble() {
+
+    return getAverageImplementation(
+        0.0,
+        STRUCT_DOUBLE,
+        (sum, newValue) -> sum.getFloat64(SUM) + newValue,
+        (sum, count) -> sum.getFloat64(SUM) / count,
+        (sum1, sum2) -> sum1.getFloat64(SUM) + sum2.getFloat64(SUM),
+        (sum, valueToUndo) -> sum.getFloat64(SUM) - valueToUndo);
+  }*/
+
+  // struct w/ no brackets: (cannot resolve unknown type error)
+  /*@UdafFactory(description = "Compute average of column with type Double.",
+          aggregateSchema = "STRUCT")
+  public static TableUdaf<Double, Struct, Double> averageDouble() {
+
+    return getAverageImplementation(
+            0.0,
+            STRUCT_DOUBLE,
+            (sum, newValue) -> sum.getFloat64(SUM) + newValue,
+            (sum, count) -> sum.getFloat64(SUM) / count,
+            (sum1, sum2) -> sum1.getFloat64(SUM) + sum2.getFloat64(SUM),
+            (sum, valueToUndo) -> sum.getFloat64(SUM) - valueToUndo);
+  }*/
+
+  // struct w/ no fields in annotation and actual schema: (not valid field name error)
+  /*@UdafFactory(description = "Compute average of column with type Double.",
+      aggregateSchema = "STRUCT< >")
+  public static TableUdaf<Double, Struct, Double> averageDouble() {
+
+    return getAverageImplementation(
+        0.0,
+        SchemaBuilder.struct().optional().build(),
+        (sum, newValue) -> sum.getFloat64(SUM) + newValue,
+        (sum, count) -> sum.getFloat64(SUM) / count,
+        (sum1, sum2) -> sum1.getFloat64(SUM) + sum2.getFloat64(SUM),
+        (sum, valueToUndo) -> sum.getFloat64(SUM) - valueToUndo);
+  }*/
 
 
   private static <I> TableUdaf<I, Struct, Double> getAverageImplementation(
