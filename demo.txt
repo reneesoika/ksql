@@ -1,0 +1,46 @@
+CREATE STREAM test_udaf3 (ID STRING, VAL1 INTEGER, VAL2 INTEGER, VAL3 DOUBLE) WITH (KAFKA_TOPIC='udaf3', PARTITIONS=1, VALUE_FORMAT='JSON');
+CREATE TABLE results_udaf3 AS SELECT ID, sum_many(val1, val2, val3) FROM test_udaf3 GROUP BY ID;
+
+INSERT INTO test_udaf3 VALUES (4, 6, 0.5);
+INSERT INTO test_udaf3 VALUES (2, 8, null);
+INSERT INTO test_udaf3 VALUES (5, null, 0.25);
+
+SELECT * FROM results_udaf3;
+
+CREATE STREAM test_udaf4 (ID STRING, VAL1 INTEGER, VAL2 INTEGER, VAL3 DOUBLE, VAL4 DOUBLE) WITH (KAFKA_TOPIC='udaf4', PARTITIONS=1, VALUE_FORMAT='JSON');
+CREATE TABLE results_udaf4 AS SELECT ID, sum_many(val1, val2, val3, val4) FROM test_udaf4 GROUP BY ID;
+
+INSERT INTO test_udaf4 VALUES (4, 6, 0.5, null);
+INSERT INTO test_udaf4 VALUES (2, 8, null, 0.25);
+INSERT INTO test_udaf4 VALUES (5, null, 0.25, -1.0);
+
+SELECT * FROM results_udaf4;
+
+CREATE STREAM bad_test_udaf4 (ID STRING, VAL1 INTEGER, VAL2 INTEGER, VAL3 DOUBLE, VAL4 STRING) WITH (KAFKA_TOPIC='bad_udaf', PARTITIONS=1, VALUE_FORMAT='JSON');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
