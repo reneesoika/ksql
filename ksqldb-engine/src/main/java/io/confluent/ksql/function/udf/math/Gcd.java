@@ -56,7 +56,7 @@ public class Gcd {
 
     // Calculate GCD using Euclid's efficient algorithm
     while (currentB != 0) {
-      long oldB = currentB;
+      final long oldB = currentB;
       currentB = currentA % oldB;
       currentA = oldB;
     }
