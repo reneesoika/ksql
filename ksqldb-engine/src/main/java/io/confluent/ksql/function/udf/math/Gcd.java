@@ -36,7 +36,7 @@ public class Gcd {
 
     /* The GCD can never be larger than either input, so converting the result to an integer
        will not cause overflow. */
-    Long result = gcd(a == null ? null : a.longValue(), b == null ? null : b.longValue());
+    final Long result = gcd(a == null ? null : a.longValue(), b == null ? null : b.longValue());
 
     return result == null ? null : result.intValue();
   }
